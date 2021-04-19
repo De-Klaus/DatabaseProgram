@@ -13,12 +13,12 @@ import search.Config;
 public class MyWorkDataBase {
 		public static void main(String[] args) throws Exception {
 		var reader = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Введите директорию расположения входного файла 'X:\\xxxxx\\xxx.json' ");
-		Config.setPathIn(checkDirFile(reader.readLine()));
-		System.out.println("Введите директорию расположения выходного файла 'X:\\xxxxx\\xxx.json' ");
-		Config.setPathOut(checkDirFile(reader.readLine()));
-		System.out.println("Введите тип операции");
-		typeOperation(reader.readLine());
+		
+		String input = reader.readLine();
+		String[] parameters = input.split(" ");
+		Config.setPathIn(checkDirFile(parameters[1], "Входного"));
+		Config.setPathOut(checkDirFile(parameters[2], "Выходного"));
+		typeOperation(parameters[0]);
 		reader.close();
 	}
 		
@@ -26,12 +26,6 @@ public class MyWorkDataBase {
 			JsonSimpleParser parser = new JsonSimpleParser();
 			new BaseModel();
 			FileExport fe = new FileExport();
-			
-			var reader = new BufferedReader(new InputStreamReader(System.in));
-			while (!type.equals("lastName") && !type.equals("productNameCount")&& !type.equals("minMax")&& !type.equals("badCustomers")){
-		        System.out.println("Вы указали неверный тип операции, повторите ввод");
-		        type = reader.readLine();
-		    	}
 			if(type.equals("lastName")) {
 				fe.start();
 				fe.writerFileType(type);
@@ -64,7 +58,11 @@ public class MyWorkDataBase {
 				}				
 				fe.close();
 			}
-			reader.close();
+			else{		        
+				fe.start();
+				fe.writerError("Вы указали неверный тип операции");
+		        fe.close();
+		    	}
 		}
 		
 		private static boolean checkFile(String directory) throws Exception {
@@ -79,12 +77,10 @@ public class MyWorkDataBase {
 			return t;
 		}
 		
-		private static String checkDirFile(String directory) throws Exception {//проекра кореектности указанной директории
-			var reader = new BufferedReader(new InputStreamReader(System.in));
-			
-	      while(!checkFile(directory)) {
-					System.out.println("Файла по указанному пути не существует, повторите ввод");
-		            directory = reader.readLine();
+		private static String checkDirFile(String directory, String typeDirectory) throws Exception {//проверка кореектности указанной директории
+	      if(!checkFile(directory)) {
+					System.out.println(typeDirectory + " файла по указанному пути не существует");
+					System.exit(0);
 			}
 			return directory;
 		}

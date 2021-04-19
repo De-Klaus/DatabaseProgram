@@ -41,6 +41,11 @@ public class FileExport { //запись файла JSON
 		count++;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void writerError(String typeError) {
+		object.put("Error", typeError);
+	}
+	
 	public void close() throws IOException { //запись данных в файла и закртие потока записи
 		file.write(object.toJSONString());
 		file.close();
